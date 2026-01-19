@@ -15,3 +15,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "HomeBudgetApp"
 include(":app")
+include(":core")
+include(":feature_home_api")
+include(":feature_home_impl")
