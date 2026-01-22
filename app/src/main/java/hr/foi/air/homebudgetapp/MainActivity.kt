@@ -13,6 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.rememberNavController
 import hr.foi.air.homebudgetapp.navigation.NavigationGraph
 import hr.foi.air.homebudgetapp.ui.theme.HomeBudgetAppTheme
+import hr.foi.air.feature_home_impl.ui.HomeScreen
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

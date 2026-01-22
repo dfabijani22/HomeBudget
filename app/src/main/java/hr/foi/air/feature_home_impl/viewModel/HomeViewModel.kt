@@ -1,4 +1,4 @@
-package hr.foi.air.homebudgetapp
+package hr.foi.air.feature_home_impl.viewModel
 
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow

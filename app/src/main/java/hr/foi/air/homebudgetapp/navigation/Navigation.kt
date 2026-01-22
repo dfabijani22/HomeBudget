@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import hr.foi.air.homebudgetapp.HomeScreen
+import hr.foi.air.feature_home_impl.ui.HomeScreen
 
 @Composable
 fun NavigationGraph(navController: NavHostController) {
