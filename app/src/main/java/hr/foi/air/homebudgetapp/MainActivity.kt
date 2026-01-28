@@ -50,7 +50,11 @@ class MainActivity : ComponentActivity() {
                             navController = navController,
                             isLoggedIn = isLoggedIn,
                             onRegisterSuccess = {
-                                // Zapiši login status
+                                lifecycleScope.launch {
+                                    userDataStore.setIsLoggedIn(true)
+                                }
+                            },
+                            onLoginSuccess = {
                                 lifecycleScope.launch {
                                     userDataStore.setIsLoggedIn(true)
                                 }
