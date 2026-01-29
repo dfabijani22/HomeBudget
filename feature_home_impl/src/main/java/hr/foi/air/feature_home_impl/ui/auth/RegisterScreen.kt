@@ -11,7 +11,9 @@ import hr.foi.air.feature_home_impl.viewModel.auth.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
-    onRegisterSuccess: () -> Unit
+    onRegisterSuccess: () -> Unit,
+    onNavigateToLogin: () -> Unit
+
 ) {
     val viewModel: RegisterViewModel = hiltViewModel()
 
@@ -88,6 +90,12 @@ fun RegisterScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(if (isLoading) "Registriram..." else "Registriraj se")
+        }
+        TextButton(
+            onClick = { onNavigateToLogin() },
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text("Već imate račun? Prijavite se")
         }
     }
 }
