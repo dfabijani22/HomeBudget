@@ -15,7 +15,8 @@ fun NavigationGraph(
     navController: NavHostController,
     isLoggedIn: Boolean,
     onRegisterSuccess: () -> Unit,
-    onLoginSuccess: () -> Unit
+    onLoginSuccess: () -> Unit,
+    onLogout: () -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -46,6 +47,10 @@ fun NavigationGraph(
                     launchSingleTop = true
                 }
             })
-        homeNav()
+            homeNav(onLogout = {
+                navController.navigate((LOGIN_ROUTE)){
+                    launchSingleTop = true
+                }
+            })
     }
 }

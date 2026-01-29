@@ -9,14 +9,24 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onLogout: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(32.dp)
+            .padding(32.dp),
+        verticalArrangement = Arrangement.Center
     ) {
         Text("Dobrodošli!", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         Text("Ovo je početni ekran.")
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = onLogout,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Odjava")
+        }
     }
+
 }

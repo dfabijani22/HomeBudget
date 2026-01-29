@@ -24,4 +24,7 @@ class UserDataStore @Inject constructor(
             preferences[IS_LOGGED_IN] = value
         }
     }
+    suspend fun clearLoginState() {
+        dataStore.edit { it[IS_LOGGED_IN] = false }
+    }
 }

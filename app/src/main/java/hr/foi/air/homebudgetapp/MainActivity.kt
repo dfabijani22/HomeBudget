@@ -58,6 +58,11 @@ class MainActivity : ComponentActivity() {
                                 lifecycleScope.launch {
                                     userDataStore.setIsLoggedIn(true)
                                 }
+                            },
+                            onLogout = {
+                                lifecycleScope.launch {
+                                    userDataStore.clearLoginState()
+                                }
                             }
                         )
                     }
