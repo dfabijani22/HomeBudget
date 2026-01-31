@@ -11,23 +11,26 @@ import hr.foi.air.feature_home_impl.viewModel.auth.LoginViewModel
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
 
     val isLoading by viewModel.isLoading.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
-    val success by viewModel.success.collectAsState()
+    val loginResult by viewModel.loginResult.collectAsState()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(success) {
-        if (success) {
-            onLoginSuccess()
-            viewModel.resetSuccess()
-        }
+    LaunchedEffect(loginResult) {
+        loginResult?.let { result ->
+            result.token?.let { token ->
+                if (result.success) {
+                    onLoginSuccess(token)
+                    viewModel.resetLoginResult()
+                }
+            }}
     }
 
     Column(

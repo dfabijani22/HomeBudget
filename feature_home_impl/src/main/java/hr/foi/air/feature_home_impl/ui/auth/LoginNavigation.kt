@@ -7,7 +7,7 @@ import androidx.navigation.NavHostController
 const val LOGIN_ROUTE = "login"
 
 fun NavGraphBuilder.loginNav(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (String) -> Unit,
     onNavigateToRegister: () -> Unit
 ) {
     composable(LOGIN_ROUTE) {

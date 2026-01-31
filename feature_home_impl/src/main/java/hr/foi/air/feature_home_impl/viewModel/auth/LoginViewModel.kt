@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import hr.foi.air.core.network.AuthApi
 import hr.foi.air.core.network.data.LoginData
+import hr.foi.air.core.network.data.LoginResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,8 +22,8 @@ class LoginViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
 
-    private val _success = MutableStateFlow(false)
-    val success: StateFlow<Boolean> = _success
+    private val _loginResult = MutableStateFlow<LoginResponse?>(null)
+    val loginResult: StateFlow<LoginResponse?> = _loginResult
 
     fun login(email: String, password: String) {
         _isLoading.value = true
@@ -34,7 +35,7 @@ class LoginViewModel @Inject constructor(
             try {
                 val response = authApi.login(loginData)
                 if (response.isSuccessful && response.body()?.success == true) {
-                    _success.value = true
+                    _loginResult.value = response.body()
                 } else {
                     _errorMessage.value = response.body()?.message ?: "Uneseni su krivi podaci, pokušajte ponovno"
                 }
@@ -46,7 +47,7 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun resetSuccess() {
-        _success.value = false
+    fun resetLoginResult() {
+        _loginResult.value = null
     }
 }

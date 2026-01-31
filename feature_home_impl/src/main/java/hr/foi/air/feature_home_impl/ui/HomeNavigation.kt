@@ -4,9 +4,9 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 
 const val HOME_ROUTE = "home"
-
-fun NavGraphBuilder.homeNav(onLogout: () -> Unit) {
+const val NEW_EXPENSE_ROUTE = "new_expense"
+fun NavGraphBuilder.homeNav(onLogout: () -> Unit, onAddExpense: () -> Unit) {
     composable(route = HOME_ROUTE) {
-        HomeScreen(onLogout = onLogout)
+        HomeScreen(onLogout = onLogout, onAddExpense = onAddExpense)
     }
 }

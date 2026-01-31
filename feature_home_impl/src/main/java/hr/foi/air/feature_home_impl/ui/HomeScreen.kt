@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun HomeScreen(onLogout: () -> Unit) {
+fun HomeScreen(onLogout: () -> Unit, onAddExpense: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -26,6 +26,14 @@ fun HomeScreen(onLogout: () -> Unit) {
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Odjava")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onAddExpense,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Dodaj trošak")
         }
     }
 

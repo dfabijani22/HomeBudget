@@ -3,6 +3,7 @@ package hr.foi.air.core.network.data
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.*
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -13,6 +14,7 @@ class UserDataStore @Inject constructor(
 ) {
     companion object {
         private val IS_LOGGED_IN = booleanPreferencesKey("is_logged_in")
+        val TOKEN_KEY = stringPreferencesKey("auth_token")
     }
 
     val isLoggedIn: Flow<Boolean> = dataStore.data.map { preferences ->
@@ -27,4 +29,16 @@ class UserDataStore @Inject constructor(
     suspend fun clearLoginState() {
         dataStore.edit { it[IS_LOGGED_IN] = false }
     }
+
+    val token: Flow<String?> = dataStore.data
+        .map { it[TOKEN_KEY] }
+    suspend fun saveToken(token: String) {
+        dataStore.edit { it[TOKEN_KEY] = token }
+    }
+    suspend fun getToken(): String? {
+        return dataStore.data
+            .map { it[TOKEN_KEY] }
+            .firstOrNull()
+    }
+
 }

@@ -54,15 +54,19 @@ class MainActivity : ComponentActivity() {
                                     userDataStore.setIsLoggedIn(true)
                                 }
                             },
-                            onLoginSuccess = {
+                            onLoginSuccess = {token ->
                                 lifecycleScope.launch {
                                     userDataStore.setIsLoggedIn(true)
+                                    userDataStore.saveToken(token)
                                 }
                             },
                             onLogout = {
                                 lifecycleScope.launch {
                                     userDataStore.clearLoginState()
                                 }
+                            },
+                            onAddExpense = {
+                                navController.navigate("new_expense")
                             }
                         )
                     }
