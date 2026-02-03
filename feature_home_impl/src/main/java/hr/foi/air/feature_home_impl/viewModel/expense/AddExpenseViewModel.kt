@@ -18,8 +18,6 @@ class AddExpenseViewModel @Inject constructor(
 
     private val _expenseAdded = MutableStateFlow(false)
     val expenseAdded: StateFlow<Boolean> = _expenseAdded
-
-    // Funkcija koja šalje trošak na backend
     fun addExpense(expense: ExpenseData) {
         Log.d("ExpenseDebug", "Expense to send: $expense")
         viewModelScope.launch {

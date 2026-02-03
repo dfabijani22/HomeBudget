@@ -10,4 +10,6 @@ class ExpenseRepository @Inject constructor(
 ) {
     suspend fun addExpense(expense: ExpenseData): Response<ExpenseResponse> =
         api.createExpense(expense)
+    suspend fun getAllExpensesByUser(month: Int, categoryId: Int?): Response<List<ExpenseData>> =
+        api.getAllExpensesByUser(month, categoryId ?: 0)
 }

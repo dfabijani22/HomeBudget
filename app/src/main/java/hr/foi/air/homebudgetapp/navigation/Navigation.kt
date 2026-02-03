@@ -7,9 +7,11 @@ import hr.foi.air.feature_home_impl.ui.HOME_ROUTE
 import hr.foi.air.feature_home_impl.ui.NEW_EXPENSE_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.REGISTER_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.LOGIN_ROUTE
+import hr.foi.air.feature_home_impl.ui.EXPENSES_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.loginNav
 import hr.foi.air.feature_home_impl.ui.auth.registerNav
 import hr.foi.air.feature_home_impl.ui.expense.newExpenseNav
+import hr.foi.air.feature_home_impl.ui.expense.expensesNav
 import hr.foi.air.feature_home_impl.ui.homeNav
 
 @Composable
@@ -19,7 +21,8 @@ fun NavigationGraph(
     onRegisterSuccess: () -> Unit,
     onLoginSuccess: (String) -> Unit,
     onLogout: () -> Unit,
-    onAddExpense: () -> Unit
+    onAddExpense: () -> Unit,
+    onViewExpenses: () -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -58,9 +61,17 @@ fun NavigationGraph(
                     navController.navigate((NEW_EXPENSE_ROUTE)){
                         launchSingleTop = true
                 }
-            })
+            },
+                onViewExpenses = {
+                    navController.navigate((EXPENSES_ROUTE)){
+                        launchSingleTop = true
+                    }
+                })
         newExpenseNav(onExpenseAdded = {
-            navController.popBackStack() // Vrati se na prethodni screen
+            navController.popBackStack()
         })
+        expensesNav()
+
+
     }
 }
