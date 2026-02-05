@@ -5,11 +5,11 @@ import hr.foi.air.core.network.data.ExpenseResponse
 import retrofit2.Response
 import javax.inject.Inject
 
-class ExpenseRepository @Inject constructor(
-    private val api: ExpenseApiService
+class ExpenseRepository(
+    private val expenseApi: ExpenseApiService = RetrofitInstance.expenseApi
 ) {
     suspend fun addExpense(expense: ExpenseData): Response<ExpenseResponse> =
-        api.createExpense(expense)
+        expenseApi.createExpense(expense)
     suspend fun getAllExpensesByUser(month: Int, categoryId: Int?): Response<List<ExpenseData>> =
-        api.getAllExpensesByUser(month, categoryId ?: 0)
+        expenseApi.getAllExpensesByUser(month, categoryId ?: 0)
 }

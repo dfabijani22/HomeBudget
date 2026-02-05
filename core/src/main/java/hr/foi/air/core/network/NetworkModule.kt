@@ -42,4 +42,21 @@ object NetworkModule {
             .build()
             .create(ExpenseApiService::class.java)
     }
+
+    @Provides
+    @Singleton
+    fun provideCategoryApi(userDataStore: UserDataStore): CategoryApiService {
+        val client = OkHttpClient.Builder()
+            .addInterceptor(AuthInterceptor {
+                runBlocking { userDataStore.getToken() }
+            })
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:5003/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CategoryApiService::class.java)
+    }
 }

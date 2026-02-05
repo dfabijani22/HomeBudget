@@ -3,6 +3,7 @@ package hr.foi.air.feature_home_impl.viewModel.expense
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.foi.air.core.network.ExpenseApiService
 import hr.foi.air.core.network.ExpenseRepository
 import hr.foi.air.core.network.data.ExpenseData
 import hr.foi.air.core.network.data.ExpenseDisplayItem
@@ -15,7 +16,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ExpenseListViewModel @Inject constructor(
-    private val repository: ExpenseRepository
+    private val expenseApi: ExpenseApiService
 ) : ViewModel() {
 
     private val _expenses = MutableStateFlow<List<ExpenseDisplayItem>>(emptyList())
@@ -28,7 +29,7 @@ class ExpenseListViewModel @Inject constructor(
         viewModelScope.launch {
             _isLoading.value = true
             try {
-                val response = repository.getAllExpensesByUser(month, categoryId ?: 0)
+                val response = expenseApi.getAllExpensesByUser(month, categoryId ?: 0)
                 if (response.isSuccessful) {
                     _expenses.value = response.body()?.map { mapExpenseDataToDisplay(it) } ?: emptyList()
                 }

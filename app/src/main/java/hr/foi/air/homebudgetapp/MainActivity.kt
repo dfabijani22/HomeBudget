@@ -70,6 +70,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onViewExpenses = {
                                 navController.navigate("expenses")
+                            },
+                            onAddCategory = {
+                                navController.navigate("new_category")
                             }
                         )
                     }

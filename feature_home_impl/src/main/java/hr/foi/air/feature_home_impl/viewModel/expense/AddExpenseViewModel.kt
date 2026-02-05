@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import hr.foi.air.core.network.ExpenseApiService
 import hr.foi.air.core.network.ExpenseRepository
 import hr.foi.air.core.network.data.ExpenseData
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddExpenseViewModel @Inject constructor(
-    private val repository: ExpenseRepository
+    private val expenseApi: ExpenseApiService
 ) : ViewModel() {
 
     private val _expenseAdded = MutableStateFlow(false)
@@ -21,7 +22,7 @@ class AddExpenseViewModel @Inject constructor(
     fun addExpense(expense: ExpenseData) {
         Log.d("ExpenseDebug", "Expense to send: $expense")
         viewModelScope.launch {
-            val response = repository.addExpense(expense)
+            val response = expenseApi.createExpense(expense)
             println("RESPONSE: ${response.code()} ${response.isSuccessful}")
             if (response.isSuccessful) {
                 _expenseAdded.value = true  // oznaka da je unos uspješan
@@ -29,7 +30,6 @@ class AddExpenseViewModel @Inject constructor(
         }
     }
 
-    // Nakon što se prikaže obavijest, resetiramo indikator
     fun onSnackShown() {
         _expenseAdded.value = false
     }
