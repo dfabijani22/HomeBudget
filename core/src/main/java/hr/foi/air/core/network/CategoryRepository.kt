@@ -2,6 +2,7 @@ package hr.foi.air.core.network
 
 import hr.foi.air.core.network.data.CategoryData
 import hr.foi.air.core.network.data.CategoryResponse
+import hr.foi.air.core.network.data.ExpenseData
 import retrofit2.Response
 import javax.inject.Inject
 
@@ -10,4 +11,7 @@ class CategoryRepository(
 
     suspend fun addCategory(category: CategoryData): Response<CategoryResponse> =
         categoryApi.createCategory(category)
+
+    suspend fun getAllCategoriesByUser(): Response<List<CategoryData>> =
+        categoryApi.getAllCategoriesByUser()
 }

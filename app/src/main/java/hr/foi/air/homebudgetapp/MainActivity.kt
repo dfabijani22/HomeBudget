@@ -73,6 +73,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onAddCategory = {
                                 navController.navigate("new_category")
+                            },
+                            onViewCategories ={
+                                navController.navigate("categories")
                             }
                         )
                     }

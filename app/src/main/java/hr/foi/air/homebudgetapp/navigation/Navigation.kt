@@ -3,6 +3,7 @@ package hr.foi.air.homebudgetapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import hr.foi.air.feature_home_impl.ui.CATEGORIES_ROUTE
 import hr.foi.air.feature_home_impl.ui.HOME_ROUTE
 import hr.foi.air.feature_home_impl.ui.NEW_EXPENSE_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.REGISTER_ROUTE
@@ -11,6 +12,7 @@ import hr.foi.air.feature_home_impl.ui.EXPENSES_ROUTE
 import hr.foi.air.feature_home_impl.ui.NEW_CATEGORY_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.loginNav
 import hr.foi.air.feature_home_impl.ui.auth.registerNav
+import hr.foi.air.feature_home_impl.ui.category.categoriesNav
 import hr.foi.air.feature_home_impl.ui.category.newCategoryNav
 import hr.foi.air.feature_home_impl.ui.expense.newExpenseNav
 import hr.foi.air.feature_home_impl.ui.expense.expensesNav
@@ -25,7 +27,8 @@ fun NavigationGraph(
     onLogout: () -> Unit,
     onAddExpense: () -> Unit,
     onViewExpenses: () -> Unit,
-    onAddCategory: () -> Unit
+    onAddCategory: () -> Unit,
+    onViewCategories: () -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -74,6 +77,11 @@ fun NavigationGraph(
                     navController.navigate((NEW_CATEGORY_ROUTE)){
                         launchSingleTop = true
                     }
+                },
+                onViewCategories = {
+                    navController.navigate((CATEGORIES_ROUTE)){
+                        launchSingleTop = true
+                    }
                 })
         newExpenseNav(onExpenseAdded = {
             navController.popBackStack()
@@ -82,6 +90,7 @@ fun NavigationGraph(
         newCategoryNav (onCategoryAdded = {
             navController.popBackStack()
         })
+        categoriesNav()
 
 
     }

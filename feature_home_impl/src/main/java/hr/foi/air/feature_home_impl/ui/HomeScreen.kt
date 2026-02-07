@@ -9,7 +9,7 @@ import androidx.compose.ui.unit.dp
 
 
 @Composable
-fun HomeScreen(onLogout: () -> Unit, onAddExpense: () -> Unit, onViewExpenses: () -> Unit, onAddCategory: () -> Unit) {
+fun HomeScreen(onLogout: () -> Unit, onAddExpense: () -> Unit, onViewExpenses: () -> Unit, onAddCategory: () -> Unit, onViewCategories: ()-> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -50,6 +50,14 @@ fun HomeScreen(onLogout: () -> Unit, onAddExpense: () -> Unit, onViewExpenses: (
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Dodaj kategoriju")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(
+            onClick = onViewCategories,
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Pregled kategorija")
         }
     }
 
