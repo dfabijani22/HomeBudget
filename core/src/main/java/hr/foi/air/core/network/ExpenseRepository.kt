@@ -3,7 +3,6 @@ package hr.foi.air.core.network
 import hr.foi.air.core.network.data.ExpenseData
 import hr.foi.air.core.network.data.ExpenseResponse
 import retrofit2.Response
-import javax.inject.Inject
 
 class ExpenseRepository(
     private val expenseApi: ExpenseApiService = RetrofitInstance.expenseApi
