@@ -26,6 +26,10 @@ class UpdateExpenseViewModel @Inject constructor(
     private val _updateSuccess = MutableStateFlow(false)
     val updateSuccess: StateFlow<Boolean> = _updateSuccess
 
+    private val _deleteSuccess = MutableStateFlow(false)
+    val deleteSuccess: StateFlow<Boolean> = _deleteSuccess
+
+
     fun loadExpense(id: Int) {
         viewModelScope.launch {
             try {
@@ -58,6 +62,27 @@ class UpdateExpenseViewModel @Inject constructor(
             }
         }
     }
+
+
+    fun deleteExpense(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = expenseApi.deleteExpense(id)
+                if (response.isSuccessful) {
+                    _deleteSuccess.value = true
+                } else {
+                    Log.e("DeleteExpenseVM", "Error deleting: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("DeleteExpenseVM", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun onDeleteHandled() {
+        _deleteSuccess.value = false
+    }
+
 
     fun onSnackShown() {
         _updateSuccess.value = false

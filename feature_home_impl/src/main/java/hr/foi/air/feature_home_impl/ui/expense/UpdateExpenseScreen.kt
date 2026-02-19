@@ -9,7 +9,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -17,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -31,6 +34,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hr.foi.air.core.network.data.ExpensePatchDto
 import hr.foi.air.feature_home_impl.viewModel.expense.UpdateExpenseViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -41,13 +46,12 @@ fun UpdateExpenseScreen(
 ) {
     val expense by viewModel.expense.collectAsState()
     val updateSuccess by viewModel.updateSuccess.collectAsState()
+    val deleteSuccess by viewModel.deleteSuccess.collectAsState()
 
-    // učitavanje podataka
     LaunchedEffect(id) {
         viewModel.loadExpense(id)
     }
 
-    // povratak nakon uspješnog update-a
     LaunchedEffect(updateSuccess) {
         if (updateSuccess) {
             onBack()
@@ -55,7 +59,14 @@ fun UpdateExpenseScreen(
         }
     }
 
-    // Loader
+    LaunchedEffect(deleteSuccess) {
+        if (deleteSuccess) {
+            onBack()            // Pop back to list
+            viewModel.onDeleteHandled()
+        }
+    }
+
+
     if (expense == null) {
         Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             CircularProgressIndicator()
@@ -63,13 +74,12 @@ fun UpdateExpenseScreen(
         return
     }
 
-    // Lokalno stanje forme
     var name by rememberSaveable { mutableStateOf(expense!!.name) }
     var amount by rememberSaveable { mutableStateOf(expense!!.amount.toString()) }
     var date by rememberSaveable { mutableStateOf(expense!!.date) }
     var categoryId by rememberSaveable { mutableStateOf(expense!!.categoryId) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // kategorije
     val categories = listOf(
         1 to "Hrana",
         2 to "Stanovanje",
@@ -107,7 +117,6 @@ fun UpdateExpenseScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Dropdown za kategorije (bez menuAnchor jer ga M3 1.1.2 nema!)
         Box {
             OutlinedTextField(
                 value = categories.firstOrNull { it.first == categoryId }?.second ?: "",
@@ -154,5 +163,37 @@ fun UpdateExpenseScreen(
         ) {
             Text("Spremi promjene")
         }
+
+        Button(
+            onClick = { showDeleteDialog = true },
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Obriši trošak")
+        }
+
+
+
+        if (showDeleteDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteDialog = false },
+                title = { Text("Brisanje troška") },
+                text = { Text("Jesi sigurna da želiš obrisati ovaj trošak?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        viewModel.deleteExpense(id)
+                        showDeleteDialog = false
+                    }) {
+                        Text("Obriši")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDeleteDialog = false }) {
+                        Text("Odustani")
+                    }
+                }
+            )
+        }
+
     }
 }
