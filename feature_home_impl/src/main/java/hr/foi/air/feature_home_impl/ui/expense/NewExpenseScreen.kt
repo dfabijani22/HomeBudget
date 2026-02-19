@@ -1,7 +1,6 @@
 package hr.foi.air.feature_home_impl.ui.expense
 
 import android.app.DatePickerDialog
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

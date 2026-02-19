@@ -10,12 +10,14 @@ import hr.foi.air.feature_home_impl.ui.auth.REGISTER_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.LOGIN_ROUTE
 import hr.foi.air.feature_home_impl.ui.EXPENSES_ROUTE
 import hr.foi.air.feature_home_impl.ui.NEW_CATEGORY_ROUTE
+import hr.foi.air.feature_home_impl.ui.UPDATE_EXPENSE_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.loginNav
 import hr.foi.air.feature_home_impl.ui.auth.registerNav
 import hr.foi.air.feature_home_impl.ui.category.categoriesNav
 import hr.foi.air.feature_home_impl.ui.category.newCategoryNav
 import hr.foi.air.feature_home_impl.ui.expense.newExpenseNav
 import hr.foi.air.feature_home_impl.ui.expense.expensesNav
+import hr.foi.air.feature_home_impl.ui.expense.updateExpenseNav
 import hr.foi.air.feature_home_impl.ui.homeNav
 
 @Composable
@@ -28,7 +30,8 @@ fun NavigationGraph(
     onAddExpense: () -> Unit,
     onViewExpenses: () -> Unit,
     onAddCategory: () -> Unit,
-    onViewCategories: () -> Unit
+    onViewCategories: () -> Unit,
+    onUpdateExpense: (Int?) -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -86,12 +89,21 @@ fun NavigationGraph(
         newExpenseNav(onExpenseAdded = {
             navController.popBackStack()
         })
-        expensesNav()
+        expensesNav(
+            onUpdateExpense = { id ->
+                println("NavigationGraph -> navigating to update_expense/$id")
+                navController.navigate("update_expense/$id") {
+                    launchSingleTop = true
+                }
+            }
+        )
+        updateExpenseNav(
+            onBack = { navController.popBackStack() }
+        )
+
         newCategoryNav (onCategoryAdded = {
             navController.popBackStack()
         })
         categoriesNav()
-
-
     }
 }

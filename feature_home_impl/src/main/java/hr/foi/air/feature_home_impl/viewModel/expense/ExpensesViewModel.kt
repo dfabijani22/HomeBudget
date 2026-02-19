@@ -1,5 +1,6 @@
 package hr.foi.air.feature_home_impl.viewModel.expense
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -30,6 +31,7 @@ class ExpenseListViewModel @Inject constructor(
             _isLoading.value = true
             try {
                 val response = expenseApi.getAllExpensesByUser(month, categoryId ?: 0)
+                Log.d("ExpenseDebug", "Loaded list: ${response.body()}")
                 if (response.isSuccessful) {
                     _expenses.value = response.body()?.map { mapExpenseDataToDisplay(it) } ?: emptyList()
                 }
@@ -42,10 +44,12 @@ class ExpenseListViewModel @Inject constructor(
     }
     private fun mapExpenseDataToDisplay(data: ExpenseData): ExpenseDisplayItem {
         return ExpenseDisplayItem(
+            id = data.id,
             name = data.name,
             amount = data.amount,
             date = formatDate(data.date),
-            categoryName = categoryIdToName(data.categoryId)
+            categoryName = categoryIdToName(data.categoryId),
+            categoryId = data.categoryId
         )
     }
 

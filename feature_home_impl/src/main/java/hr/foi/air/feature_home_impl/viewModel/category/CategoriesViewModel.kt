@@ -36,7 +36,6 @@ class CategoriesViewModel @Inject constructor(
                     _categories.value = response.body()?.map { mapCategoryDataToDisplay(it) } ?: emptyList()
                 }
             } catch (e: Exception) {
-                // Log error if needed
             } finally {
                 _isLoading.value = false
             }
