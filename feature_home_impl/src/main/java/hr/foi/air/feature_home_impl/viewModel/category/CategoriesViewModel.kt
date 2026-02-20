@@ -43,6 +43,7 @@ class CategoriesViewModel @Inject constructor(
     }
     private fun mapCategoryDataToDisplay(data: CategoryData): CategoryDisplayItem {
         return CategoryDisplayItem(
+            id = data.id,
             name = data.name,
             description = data.description
         )

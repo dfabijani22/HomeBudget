@@ -10,6 +10,8 @@ const val NEW_CATEGORY_ROUTE = "new_category"
 const val CATEGORIES_ROUTE = "categories"
 const val UPDATE_EXPENSE_ROUTE = "update_expense"
 const val UPDATE_EXPENSE_NAV = "update_expense/{id}"
+const val UPDATE_CATEGORY_ROUTE = "update_expense"
+const val UPDATE_CATEGORY_NAV = "update_expense/{id}"
 
 
 

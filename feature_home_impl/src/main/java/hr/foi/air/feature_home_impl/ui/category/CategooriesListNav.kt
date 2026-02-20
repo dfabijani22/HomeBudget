@@ -5,8 +5,17 @@ import androidx.navigation.compose.composable
 
 const val CATEGORIES_ROUTE = "categories"
 
-fun NavGraphBuilder.categoriesNav() {
+fun NavGraphBuilder.categoriesNav(
+    onUpdateCategory: (Int) -> Unit
+) {
     composable(route = CATEGORIES_ROUTE) {
-        CategoriesListScreen()
+        CategoriesListScreen(
+            onUpdateCategory = { id ->
+                println("expensesNav -> forwarding id=$id")
+                onUpdateCategory(id)
+            }
+        )
     }
 }
+
+

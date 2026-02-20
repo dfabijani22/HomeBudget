@@ -15,6 +15,7 @@ import hr.foi.air.feature_home_impl.ui.auth.loginNav
 import hr.foi.air.feature_home_impl.ui.auth.registerNav
 import hr.foi.air.feature_home_impl.ui.category.categoriesNav
 import hr.foi.air.feature_home_impl.ui.category.newCategoryNav
+import hr.foi.air.feature_home_impl.ui.category.updateCategoryNav
 import hr.foi.air.feature_home_impl.ui.expense.newExpenseNav
 import hr.foi.air.feature_home_impl.ui.expense.expensesNav
 import hr.foi.air.feature_home_impl.ui.expense.updateExpenseNav
@@ -31,7 +32,8 @@ fun NavigationGraph(
     onViewExpenses: () -> Unit,
     onAddCategory: () -> Unit,
     onViewCategories: () -> Unit,
-    onUpdateExpense: (Int?) -> Unit
+    onUpdateExpense: (Int?) -> Unit,
+    onUpdateCategory: (Int?) -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -104,6 +106,16 @@ fun NavigationGraph(
         newCategoryNav (onCategoryAdded = {
             navController.popBackStack()
         })
-        categoriesNav()
+        categoriesNav(
+            onUpdateCategory = { id ->
+                println("NavigationGraph -> navigating to update_category/$id")
+                navController.navigate("update_category/$id") {
+                    launchSingleTop = true
+                }
+            }
+        )
+        updateCategoryNav(
+            onBack = { navController.popBackStack() }
+        )
     }
 }
