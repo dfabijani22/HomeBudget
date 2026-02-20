@@ -18,6 +18,8 @@ fun UpdateCategoryScreen(
     val category by viewModel.category.collectAsState()
     val updateSuccess by viewModel.updateSuccess.collectAsState()
     val errorMessage by viewModel.errorMessage.collectAsState()
+    val deleteSuccess by viewModel.deleteSuccess.collectAsState()
+
 
     // UCITAVANJE KATEGORIJE
     LaunchedEffect(id) {
@@ -29,6 +31,13 @@ fun UpdateCategoryScreen(
         if (updateSuccess) {
             onBack()
             viewModel.clearMessages()
+        }
+    }
+
+    LaunchedEffect(deleteSuccess) {
+        if (deleteSuccess) {
+            onBack()            // Pop back to list
+            viewModel.onDeleteHandled()
         }
     }
 
@@ -48,6 +57,7 @@ fun UpdateCategoryScreen(
     // STATEOVI ZA FORME
     var name by remember { mutableStateOf(category!!.name) }
     var description by remember { mutableStateOf(category!!.description ?: "") }
+    var showDeleteDialog by remember { mutableStateOf(false) }
 
     // AKO JE SISTEMSKA → NE DOPUSTAJ EDIT
     if (isSystem) {
@@ -107,5 +117,32 @@ fun UpdateCategoryScreen(
         ) {
             Text("Spremi promjene")
         }
+        Button(
+            onClick = { showDeleteDialog = true },
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Obriši kategoriju")
+        }
+    }
+    if (showDeleteDialog) {
+        AlertDialog(
+            onDismissRequest = { showDeleteDialog = false },
+            title = { Text("Brisanje kategorije") },
+            text = { Text("Jesi sigurna da želiš obrisati ovu kategoriju?") },
+            confirmButton = {
+                TextButton(onClick = {
+                    viewModel.deleteCategory(id)
+                    showDeleteDialog = false
+                }) {
+                    Text("Obriši")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteDialog = false }) {
+                    Text("Odustani")
+                }
+            }
+        )
     }
 }

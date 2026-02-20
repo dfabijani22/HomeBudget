@@ -4,8 +4,10 @@ import hr.foi.air.core.network.data.CategoryData
 import hr.foi.air.core.network.data.CategoryRequest
 import hr.foi.air.core.network.data.CategoryResponse
 import hr.foi.air.core.network.data.ExpenseData
+import hr.foi.air.core.network.data.ExpenseResponse
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
@@ -23,9 +25,12 @@ interface CategoryApiService {
         @Path("id") id: Int,
         @Body request: CategoryRequest
     ): Response<CategoryResponse>
-
     @GET("api/category/{id}")
     suspend fun getCategoryById(
         @Path("id") id: Int
     ): Response<CategoryData>
+    @DELETE("api/category/{id}")
+    suspend fun deleteCategory(
+        @Path("id") id: Int
+    ): Response<CategoryResponse>
 }

@@ -25,6 +25,8 @@ class UpdateCategoryViewModel @Inject constructor(
 
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage: StateFlow<String?> = _errorMessage
+    private val _deleteSuccess = MutableStateFlow(false)
+    val deleteSuccess: StateFlow<Boolean> = _deleteSuccess
 
     fun loadCategory(id: Int) {
         viewModelScope.launch {
@@ -65,5 +67,24 @@ class UpdateCategoryViewModel @Inject constructor(
     fun clearMessages() {
         _errorMessage.value = null
         _updateSuccess.value = false
+    }
+
+    fun deleteCategory(id: Int) {
+        viewModelScope.launch {
+            try {
+                val response = api.deleteCategory(id)
+                if (response.isSuccessful) {
+                    _deleteSuccess.value = true
+                } else {
+                    Log.e("DeleteCategoryVM", "Error deleting: ${response.errorBody()?.string()}")
+                }
+            } catch (e: Exception) {
+                Log.e("DeleteCategoryVM", "Exception: ${e.message}")
+            }
+        }
+    }
+
+    fun onDeleteHandled() {
+        _deleteSuccess.value = false
     }
 }
