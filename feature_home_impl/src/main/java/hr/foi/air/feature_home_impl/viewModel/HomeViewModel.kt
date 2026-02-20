@@ -17,7 +17,6 @@ class HomeViewModel @Inject constructor(private val authApi: AuthApi
     private val repository = ApiRepository()
 
     private val _registerResult = MutableStateFlow<String?>(null)
-    val registerResult: StateFlow<String?> = _registerResult
 
     fun registerUser(data: RegisterData) {
         viewModelScope.launch {

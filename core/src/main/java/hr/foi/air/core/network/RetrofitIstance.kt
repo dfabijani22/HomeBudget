@@ -20,4 +20,13 @@ object RetrofitInstance {
             .build()
             .create(ExpenseApiService::class.java)
     }
+
+    val categoryApi: CategoryApiService by lazy {
+        Retrofit.Builder()
+            .baseUrl("http://10.0.2.2:5003/")
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(CategoryApiService::class.java)
+    }
+
 }

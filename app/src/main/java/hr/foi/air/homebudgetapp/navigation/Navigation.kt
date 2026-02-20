@@ -3,15 +3,22 @@ package hr.foi.air.homebudgetapp.navigation
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import hr.foi.air.feature_home_impl.ui.CATEGORIES_ROUTE
 import hr.foi.air.feature_home_impl.ui.HOME_ROUTE
 import hr.foi.air.feature_home_impl.ui.NEW_EXPENSE_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.REGISTER_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.LOGIN_ROUTE
 import hr.foi.air.feature_home_impl.ui.EXPENSES_ROUTE
+import hr.foi.air.feature_home_impl.ui.NEW_CATEGORY_ROUTE
+import hr.foi.air.feature_home_impl.ui.UPDATE_EXPENSE_ROUTE
 import hr.foi.air.feature_home_impl.ui.auth.loginNav
 import hr.foi.air.feature_home_impl.ui.auth.registerNav
+import hr.foi.air.feature_home_impl.ui.category.categoriesNav
+import hr.foi.air.feature_home_impl.ui.category.newCategoryNav
+import hr.foi.air.feature_home_impl.ui.category.updateCategoryNav
 import hr.foi.air.feature_home_impl.ui.expense.newExpenseNav
 import hr.foi.air.feature_home_impl.ui.expense.expensesNav
+import hr.foi.air.feature_home_impl.ui.expense.updateExpenseNav
 import hr.foi.air.feature_home_impl.ui.homeNav
 
 @Composable
@@ -22,7 +29,11 @@ fun NavigationGraph(
     onLoginSuccess: (String) -> Unit,
     onLogout: () -> Unit,
     onAddExpense: () -> Unit,
-    onViewExpenses: () -> Unit
+    onViewExpenses: () -> Unit,
+    onAddCategory: () -> Unit,
+    onViewCategories: () -> Unit,
+    onUpdateExpense: (Int?) -> Unit,
+    onUpdateCategory: (Int?) -> Unit
 
 ) {
     val startDestination = if (isLoggedIn) HOME_ROUTE else LOGIN_ROUTE
@@ -66,12 +77,45 @@ fun NavigationGraph(
                     navController.navigate((EXPENSES_ROUTE)){
                         launchSingleTop = true
                     }
+                },
+                onAddCategory = {
+                    navController.navigate((NEW_CATEGORY_ROUTE)){
+                        launchSingleTop = true
+                    }
+                },
+                onViewCategories = {
+                    navController.navigate((CATEGORIES_ROUTE)){
+                        launchSingleTop = true
+                    }
                 })
         newExpenseNav(onExpenseAdded = {
             navController.popBackStack()
         })
-        expensesNav()
+        expensesNav(
+            onUpdateExpense = { id ->
+                println("NavigationGraph -> navigating to update_expense/$id")
+                navController.navigate("update_expense/$id") {
+                    launchSingleTop = true
+                }
+            }
+        )
+        updateExpenseNav(
+            onBack = { navController.popBackStack() }
+        )
 
-
+        newCategoryNav (onCategoryAdded = {
+            navController.popBackStack()
+        })
+        categoriesNav(
+            onUpdateCategory = { id ->
+                println("NavigationGraph -> navigating to update_category/$id")
+                navController.navigate("update_category/$id") {
+                    launchSingleTop = true
+                }
+            }
+        )
+        updateCategoryNav(
+            onBack = { navController.popBackStack() }
+        )
     }
 }

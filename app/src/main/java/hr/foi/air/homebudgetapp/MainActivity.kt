@@ -70,7 +70,21 @@ class MainActivity : ComponentActivity() {
                             },
                             onViewExpenses = {
                                 navController.navigate("expenses")
+                            },
+                            onAddCategory = {
+                                navController.navigate("new_category")
+                            },
+                            onViewCategories ={
+                                navController.navigate("categories")
+                            },
+
+                            onUpdateExpense = { id ->
+                                navController.navigate("update_expense/$id")
+                            },
+                            onUpdateCategory = { id ->
+                                navController.navigate("update_expense/$id")
                             }
+
                         )
                     }
                 }
