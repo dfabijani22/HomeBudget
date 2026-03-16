@@ -1,9 +1,11 @@
 package hr.foi.air.feature_home_impl.ui.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -15,31 +17,36 @@ fun LoginScreen(
     onNavigateToRegister: () -> Unit
 ) {
     val viewModel: LoginViewModel = hiltViewModel()
+    val context = LocalContext.current
 
-    val isLoading by viewModel.isLoading.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-    val loginResult by viewModel.loginResult.collectAsState()
+    val token by viewModel.token.collectAsState()
+    val error by viewModel.error.collectAsState()
 
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
 
-    LaunchedEffect(loginResult) {
-        loginResult?.let { result ->
-            result.token?.let { token ->
-                if (result.success) {
-                    onLoginSuccess(token)
-                    viewModel.resetLoginResult()
-                }
-            }}
+    LaunchedEffect(token) {
+        if (!token.isNullOrBlank()) {
+            Toast.makeText(context, "Prijava uspješna!", Toast.LENGTH_SHORT).show()
+            onLoginSuccess(token!!)   // <-- sada prosljeđuješ String
+            viewModel.clearError()
+        }
+    }
+
+    LaunchedEffect(error) {
+        error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
+        }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
     ) {
         Text("Prijava", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
             value = email,
@@ -47,6 +54,8 @@ fun LoginScreen(
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
+
+        Spacer(Modifier.height(12.dp))
 
         OutlinedTextField(
             value = password,
@@ -56,26 +65,17 @@ fun LoginScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (!errorMessage.isNullOrEmpty()) {
-            Text(
-                text = errorMessage!!,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
+        Spacer(Modifier.height(16.dp))
 
         Button(
             onClick = { viewModel.login(email, password) },
-            enabled = !isLoading,
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isLoading) "Prijavljujem..." else "Prijavi se")
+            Text("Prijavi se")
         }
 
         TextButton(
-            onClick = { onNavigateToRegister() },
+            onClick = onNavigateToRegister,
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text("Nemate račun? Registrirajte se")

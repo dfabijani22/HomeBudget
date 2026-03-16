@@ -55,10 +55,12 @@ dependencies {
 
     implementation("com.google.dagger:hilt-android:2.51.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    implementation("androidx.datastore:datastore-core-android:1.2.0")
     kapt("com.google.dagger:hilt-compiler:2.51.1")
 
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.datastore:datastore-preferences:1.1.0")
 
     implementation("com.google.dagger:hilt-android:2.51.1")
 }

@@ -20,13 +20,10 @@ fun UpdateCategoryScreen(
     val errorMessage by viewModel.errorMessage.collectAsState()
     val deleteSuccess by viewModel.deleteSuccess.collectAsState()
 
-
-    // UCITAVANJE KATEGORIJE
     LaunchedEffect(id) {
         viewModel.loadCategory(id)
     }
 
-    // NAKON USPJEHA VRATI SE NAZAD
     LaunchedEffect(updateSuccess) {
         if (updateSuccess) {
             onBack()
@@ -36,12 +33,11 @@ fun UpdateCategoryScreen(
 
     LaunchedEffect(deleteSuccess) {
         if (deleteSuccess) {
-            onBack()            // Pop back to list
+            onBack()
             viewModel.onDeleteHandled()
         }
     }
 
-    // LOADER
     if (category == null) {
         Box(
             Modifier.fillMaxSize(),
@@ -52,14 +48,13 @@ fun UpdateCategoryScreen(
         return
     }
 
-    val isSystem = category!!.isDefault == true   // PROVJERA SISTEMSKE
+    val isSystem = category!!.isDefault == true
 
-    // STATEOVI ZA FORME
-    var name by remember { mutableStateOf(category!!.name) }
-    var description by remember { mutableStateOf(category!!.description ?: "") }
+
+    var name by remember(category) { mutableStateOf(category?.name ?: "") }
+    var description by remember(category) { mutableStateOf(category?.description ?: "")}
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    // AKO JE SISTEMSKA → NE DOPUSTAJ EDIT
     if (isSystem) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -73,16 +68,15 @@ fun UpdateCategoryScreen(
         return
     }
 
-    // UI ZA EDIT KATEGORIJE
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
+
         Text("Uredi kategoriju", style = MaterialTheme.typography.titleLarge)
 
-        // GREŠKA SA BACKENDA (duplikat, invalid, itd.)
         if (errorMessage != null) {
             Text(
                 text = errorMessage!!,
@@ -106,25 +100,29 @@ fun UpdateCategoryScreen(
 
         Button(
             onClick = {
-
                 viewModel.updateCategory(
                     id = id,
                     name = name.trim(),
-                    description = description.trim()
+                    description = description.trim(),
+                    isDefault = category!!.isDefault
                 )
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Spremi promjene")
         }
+
         Button(
             onClick = { showDeleteDialog = true },
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.error
+            ),
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Obriši kategoriju")
         }
     }
+
     if (showDeleteDialog) {
         AlertDialog(
             onDismissRequest = { showDeleteDialog = false },

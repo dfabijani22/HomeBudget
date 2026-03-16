@@ -1,98 +1,120 @@
 package hr.foi.air.feature_home_impl.ui.auth
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import hr.foi.air.feature_home_impl.viewModel.auth.RegisterViewModel
 
 @Composable
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
-
 ) {
     val viewModel: RegisterViewModel = hiltViewModel()
+    val context = LocalContext.current
 
-    val registerData by viewModel.registerData.collectAsState()
-    val isLoading by viewModel.isLoading.collectAsState()
-    val errorMessage by viewModel.errorMessage.collectAsState()
-    val success by viewModel.success.collectAsState()
+    val registerSuccess by viewModel.registerSuccess.collectAsState()
+    val error by viewModel.error.collectAsState()
 
-    LaunchedEffect(success) {
-        if (success) {
+    var name by remember { mutableStateOf("") }
+    var surname by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var confirmPassword by remember { mutableStateOf("") }
+
+    LaunchedEffect(registerSuccess) {
+        if (registerSuccess) {
+            Toast.makeText(context, "Registracija uspješna!", Toast.LENGTH_SHORT).show()
             onRegisterSuccess()
-            viewModel.resetSuccess()
+            viewModel.clearError()
+        }
+    }
+
+    LaunchedEffect(error) {
+        error?.let {
+            Toast.makeText(context, it, Toast.LENGTH_LONG).show()
         }
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Center
     ) {
         Text("Registracija", style = MaterialTheme.typography.headlineMedium)
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(Modifier.height(16.dp))
 
         OutlinedTextField(
-            value = registerData.firstName,
-            onValueChange = { viewModel.onFieldChange(registerData.copy(firstName = it)) },
+            value = name,
+            onValueChange = { name = it },
             label = { Text("Ime") },
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
-            value = registerData.lastName,
-            onValueChange = { viewModel.onFieldChange(registerData.copy(lastName = it)) },
+            value = surname,
+            onValueChange = { surname = it },
             label = { Text("Prezime") },
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
-            value = registerData.email,
-            onValueChange = { viewModel.onFieldChange(registerData.copy(email = it)) },
+            value = email,
+            onValueChange = { email = it },
             label = { Text("Email") },
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
-            value = registerData.password,
-            onValueChange = { viewModel.onFieldChange(registerData.copy(password = it)) },
+            value = password,
+            onValueChange = { password = it },
             label = { Text("Lozinka") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
+        Spacer(Modifier.height(8.dp))
+
         OutlinedTextField(
-            value = registerData.confirmPassword,
-            onValueChange = { viewModel.onFieldChange(registerData.copy(confirmPassword = it)) },
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
             label = { Text("Potvrdi lozinku") },
             visualTransformation = PasswordVisualTransformation(),
             modifier = Modifier.fillMaxWidth()
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
-
-        if (errorMessage != null) {
-            Text(
-                text = errorMessage!!,
-                color = MaterialTheme.colorScheme.error,
-                modifier = Modifier.padding(bottom = 8.dp)
-            )
-        }
+        Spacer(Modifier.height(20.dp))
 
         Button(
-            onClick = { viewModel.registerUser() },
-            enabled = !isLoading,
+            onClick = {
+                viewModel.register(
+                    name = name,
+                    surname = surname,
+                    email = email,
+                    password = password,
+                    confirmPassword = confirmPassword
+                )
+            },
             modifier = Modifier.fillMaxWidth()
         ) {
-            Text(if (isLoading) "Registriram..." else "Registriraj se")
+            Text("Registriraj se")
         }
+
         TextButton(
-            onClick = { onNavigateToLogin() },
+            onClick = onNavigateToLogin,
             modifier = Modifier.padding(top = 16.dp)
         ) {
             Text("Već imate račun? Prijavite se")

@@ -3,61 +3,53 @@ package hr.foi.air.feature_home_impl.viewModel.auth
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.foi.air.core.network.AuthApi
-import hr.foi.air.core.network.data.RegisterData
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import androidx.lifecycle.viewModelScope
+import hr.foi.feature_home_api.api.AuthRepository
+import hr.foi.feature_home_api.model.RegisterRequest
 
 
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
-    private val authApi: AuthApi
+    private val repo: AuthRepository
 ) : ViewModel() {
-    private val _registerData = MutableStateFlow(RegisterData())
-    val registerData = _registerData.asStateFlow()
 
+    private val _registerSuccess = MutableStateFlow(false)
+    val registerSuccess = _registerSuccess.asStateFlow()
 
-    private val _isLoading = MutableStateFlow(false)
-    val isLoading = _isLoading.asStateFlow()
+    private val _error = MutableStateFlow<String?>(null)
+    val error = _error.asStateFlow()
 
-
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage = _errorMessage.asStateFlow()
-
-
-    private val _success = MutableStateFlow(false)
-    val success = _success.asStateFlow()
-
-
-    fun onFieldChange(data: RegisterData) {
-        _registerData.value = data
-    }
-
-
-    fun registerUser() {
+    fun register(
+        name: String,
+        surname: String,
+        email: String,
+        password: String,
+        confirmPassword: String
+    ) {
         viewModelScope.launch {
-            _isLoading.value = true
-            _errorMessage.value = null
-            try {
-                val result = authApi.register(_registerData.value)
-                if (result.isSuccessful) {
-                    _success.value = true
-                } else {
-                    _errorMessage.value = result.message() ?: "Greška u registraciji."
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = e.message ?: "Neuspješan zahtjev."
-            } finally {
-                _isLoading.value = false
+            val req = RegisterRequest(
+                email = email,
+                password = password,
+                confirmPassword = confirmPassword,
+                name = name,
+                surname = surname
+            )
+
+            val res = repo.register(req)
+
+            if (res.success) {
+                _registerSuccess.value = true
+            } else {
+                _error.value = res.message ?: "Registracija nije uspjela."
             }
         }
     }
 
-
-    fun resetSuccess() {
-        _success.value = false
+    fun clearError() {
+        _error.value = null
     }
 }

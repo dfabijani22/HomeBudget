@@ -1,85 +1,83 @@
 package hr.foi.air.feature_home_impl.viewModel.category
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import hr.foi.air.core.network.CategoryApiService
-import hr.foi.air.core.network.data.CategoryData
-import hr.foi.air.core.network.data.CategoryRequest
+import hr.foi.feature_home_api.CategoryRepository
+import hr.foi.feature_home_api.model.CategoryRequest
+import hr.foi.feature_home_api.model.CategoryResponse
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+data class CategoryUi(
+    val id: Int,
+    val name: String?,
+    val description: String?,
+    val isDefault: Boolean
+)
+
 @HiltViewModel
 class UpdateCategoryViewModel @Inject constructor(
-    private val api: CategoryApiService
+    private val repository: CategoryRepository
 ) : ViewModel() {
 
-    private val _category = MutableStateFlow<CategoryData?>(null)
-    val category: StateFlow<CategoryData?> = _category
+    private val _category = MutableStateFlow<CategoryUi?>(null)
+    val category: StateFlow<CategoryUi?> = _category
 
     private val _updateSuccess = MutableStateFlow(false)
     val updateSuccess: StateFlow<Boolean> = _updateSuccess
 
-    private val _errorMessage = MutableStateFlow<String?>(null)
-    val errorMessage: StateFlow<String?> = _errorMessage
     private val _deleteSuccess = MutableStateFlow(false)
     val deleteSuccess: StateFlow<Boolean> = _deleteSuccess
 
+    private val _errorMessage = MutableStateFlow<String?>(null)
+    val errorMessage: StateFlow<String?> = _errorMessage
+
     fun loadCategory(id: Int) {
         viewModelScope.launch {
-            try {
-                val response = api.getCategoryById(id)
-                Log.d("UpdateDebug", "LOADING category id=$id")
-                if (response.isSuccessful) {
-                    _category.value = response.body()
-                } else {
-                    _errorMessage.value = "Greška pri učitavanju kategorije"
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = e.message
+            val res = repository.getById(id)
+            res.data?.let {
+                _category.value = it.toUi()
+            } ?: run {
+                _errorMessage.value = res.message ?: "Greška pri učitavanju kategorije"
             }
+
         }
     }
 
-    fun updateCategory(id: Int, name: String, description: String) {
+    fun updateCategory(
+        id: Int,
+        name: String,
+        description: String,
+        isDefault: Boolean
+    ) {
         viewModelScope.launch {
-            try {
-                val request = CategoryRequest(
-                    name = name,
-                    description = description
-                )
-                val response = api.updateCategory(id, request)
+            val request = CategoryRequest(
+                name = name,
+                description = description,
+                isDefault = isDefault
+            )
 
-                if (response.isSuccessful && response.body()?.success == true) {
-                    _updateSuccess.value = true
-                } else {
-                    _errorMessage.value = response.body()?.message ?: "Greška pri spremanju"
-                }
-            } catch (e: Exception) {
-                _errorMessage.value = e.message
+            val res = repository.update(id, request)
+
+            if (res.success) {
+                _updateSuccess.value = true
+            } else {
+                _errorMessage.value = res.message ?: "Greška pri spremanju"
             }
         }
-    }
-
-    fun clearMessages() {
-        _errorMessage.value = null
-        _updateSuccess.value = false
     }
 
     fun deleteCategory(id: Int) {
         viewModelScope.launch {
-            try {
-                val response = api.deleteCategory(id)
-                if (response.isSuccessful) {
-                    _deleteSuccess.value = true
-                } else {
-                    Log.e("DeleteCategoryVM", "Error deleting: ${response.errorBody()?.string()}")
-                }
-            } catch (e: Exception) {
-                Log.e("DeleteCategoryVM", "Exception: ${e.message}")
+            val res = repository.delete(id)
+
+            if (res.success) {
+                _deleteSuccess.value = true
+            } else {
+                _errorMessage.value = res.message ?: "Greška pri brisanju"
             }
         }
     }
@@ -87,4 +85,17 @@ class UpdateCategoryViewModel @Inject constructor(
     fun onDeleteHandled() {
         _deleteSuccess.value = false
     }
+    fun clearMessages() {
+        _errorMessage.value = null
+        _updateSuccess.value = false
+        _deleteSuccess.value = false
+    }
 }
+
+private fun CategoryResponse.toUi(): CategoryUi =
+    CategoryUi(
+        id = id ?: 0,
+        name = name,
+        description = description,
+        isDefault = isDefault
+    )
