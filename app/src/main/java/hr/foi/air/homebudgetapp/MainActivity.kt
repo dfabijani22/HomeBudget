@@ -15,7 +15,7 @@ import hr.foi.air.homebudgetapp.navigation.NavigationGraph
 import hr.foi.air.homebudgetapp.ui.theme.HomeBudgetAppTheme
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import hr.foi.air.core.network.data.UserDataStore
+import hr.foi.air.feature_home_impl.datastore.UserDataStore
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

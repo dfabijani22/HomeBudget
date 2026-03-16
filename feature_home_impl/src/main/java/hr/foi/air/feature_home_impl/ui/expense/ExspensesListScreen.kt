@@ -1,9 +1,7 @@
 package hr.foi.air.feature_home_impl.ui.expense
 
-
 import android.util.Log
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -15,9 +13,50 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import hr.foi.air.feature_home_impl.viewModel.expense.ExpenseListViewModel
-import java.util.*
+
 const val UPDATE_EXPENSE_ROUTE = "update_expense/{id}"
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun DropdownMenuBox(
+    label: String,
+    options: List<Pair<Int, String>>,
+    selected: Int,
+    onSelected: (Int) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = expanded,
+        onExpandedChange = { expanded = !expanded },
+        modifier = modifier
+    ) {
+        OutlinedTextField(
+            readOnly = true,
+            value = options.firstOrNull { it.first == selected }?.second ?: "",
+            onValueChange = {},
+            label = { Text(label) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .menuAnchor()
+        )
+        ExposedDropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            options.forEach { (id, name) ->
+                DropdownMenuItem(
+                    text = { Text(name) },
+                    onClick = {
+                        onSelected(id)
+                        expanded = false
+                    }
+                )
+            }
+        }
+    }
+}
 
 @Composable
 fun ExpenseListScreen(
@@ -26,14 +65,41 @@ fun ExpenseListScreen(
 ) {
     val expenses by viewModel.expenses.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val categories by viewModel.categories.collectAsState()
 
-    var selectedMonth by remember { mutableStateOf(Calendar.getInstance().get(Calendar.MONTH)) }
-    val categories = listOf(0 to "Sve", 1 to "Hrana", 2 to "Stanovanje", 3 to "Zabava")
+    val monthNames = remember {
+        listOf(
+            1 to "Siječanj",
+            2 to "Veljača",
+            3 to "Ožujak",
+            4 to "Travanj",
+            5 to "Svibanj",
+            6 to "Lipanj",
+            7 to "Srpanj",
+            8 to "Kolovoz",
+            9 to "Rujan",
+            10 to "Listopad",
+            11 to "Studeni",
+            12 to "Prosinac"
+        )
+    }
+
+    val currentMonth = remember { java.time.LocalDate.now().monthValue }
+    var selectedMonth by remember { mutableStateOf(currentMonth) }
+
     var selectedCategoryId by remember { mutableStateOf(0) }
 
+    LaunchedEffect(Unit) {
+        viewModel.loadExpenses()
+    }
+    LaunchedEffect(selectedMonth) {
+        viewModel.setMonth(selectedMonth)
+    }
 
-    LaunchedEffect(selectedMonth, selectedCategoryId) {
-        viewModel.loadExpenses(selectedMonth, selectedCategoryId.takeIf { it != 0 })
+    LaunchedEffect(selectedCategoryId) {
+        viewModel.setCategory(
+            selectedCategoryId.takeIf { it != 0 }
+        )
     }
 
     Column(Modifier.padding(16.dp)) {
@@ -43,7 +109,7 @@ fun ExpenseListScreen(
         ) {
             DropdownMenuBox(
                 label = "Mjesec",
-                options = (1..12).map { it to "$it" },
+                options = monthNames,
                 selected = selectedMonth,
                 onSelected = { selectedMonth = it }
             )
@@ -70,18 +136,21 @@ fun ExpenseListScreen(
                         elevation = CardDefaults.cardElevation()
                     ) {
                         Column(Modifier.padding(12.dp)) {
+
                             Row(
                                 Modifier
                                     .fillMaxWidth(),
-                                horizontalArrangement = Arrangement.Start
-                            ){
-                                Text("Naziv: ${expense.name}", fontWeight = FontWeight.Bold)
+                                horizontalArrangement = Arrangement.SpaceBetween
+                            ) {
+                                Text(
+                                    "Naziv: ${expense.name}",
+                                    fontWeight = FontWeight.Bold
+                                )
 
                                 IconButton(
                                     onClick = {
-                                        Log.d("NavTrace", "List expensesNav -> forwarding id=${expense.id}")
-                                        if (expense.id != null){
-                                        onUpdateExpense(expense.id!!)}
+                                        Log.d("NavTrace", "ID=${expense.id}")
+                                        onUpdateExpense(expense.id)
                                     }
                                 ) {
                                     Icon(
@@ -89,10 +158,10 @@ fun ExpenseListScreen(
                                         contentDescription = "Uredi trošak"
                                     )
                                 }
-
                             }
+
                             Text("Iznos: %.2f €".format(expense.amount))
-                            Text("Datum: ${expense.date}")
+                            Text("Datum: ${expense.dateFormatted}")
                             Text("Kategorija: ${expense.categoryName}")
                         }
                     }
