@@ -28,7 +28,7 @@ fun LoginScreen(
     LaunchedEffect(token) {
         if (!token.isNullOrBlank()) {
             Toast.makeText(context, "Prijava uspješna!", Toast.LENGTH_SHORT).show()
-            onLoginSuccess(token!!)   // <-- sada prosljeđuješ String
+            onLoginSuccess(token!!)
             viewModel.clearError()
         }
     }

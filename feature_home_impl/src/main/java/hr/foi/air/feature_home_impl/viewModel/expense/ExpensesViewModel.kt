@@ -37,7 +37,9 @@ class ExpenseListViewModel @Inject constructor(
     private val _errorMessage = MutableStateFlow<String?>(null)
     val errorMessage = _errorMessage.asStateFlow()
     private val currentMonth = java.time.LocalDate.now().monthValue
+    private val currentYear = java.time.LocalDate.now().year
     private val _selectedMonth = MutableStateFlow<Int?>(currentMonth)
+    private val _selectedYear = MutableStateFlow<Int?>(currentYear)
     private val _selectedCategory = MutableStateFlow<Int?>(null)
 
     private val _categories = MutableStateFlow<List<Pair<Int,String>>>(emptyList())
@@ -49,6 +51,10 @@ class ExpenseListViewModel @Inject constructor(
     }
     fun setMonth(month: Int?) {
         _selectedMonth.value = month
+        loadExpenses()
+    }
+    fun setYear(year: Int?) {
+        _selectedYear.value = year
         loadExpenses()
     }
 
@@ -77,6 +83,7 @@ class ExpenseListViewModel @Inject constructor(
 
             val res = repository.getExpenses(
                 month = _selectedMonth.value,
+                year = _selectedYear.value,
                 categoryId = _selectedCategory.value
             )
 

@@ -5,10 +5,8 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        // Kotlin (za cijeli projekt)
         id("org.jetbrains.kotlin.android") version "1.9.22"
 
-        // Hilt (za cijeli projekt)
         id("com.google.dagger.hilt.android") version "2.51.1"
 
     }

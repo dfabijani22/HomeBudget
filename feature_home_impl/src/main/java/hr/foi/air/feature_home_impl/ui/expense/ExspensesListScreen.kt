@@ -85,7 +85,13 @@ fun ExpenseListScreen(
     }
 
     val currentMonth = remember { java.time.LocalDate.now().monthValue }
+    val currentYear = remember { java.time.LocalDate.now().year }
     var selectedMonth by remember { mutableStateOf(currentMonth) }
+    var selectedYear by remember {mutableStateOf(currentYear)}
+
+    val yearOptions = remember {
+        ((currentYear - 3)..(currentYear + 1)).map { it to it.toString() }
+    }
 
     var selectedCategoryId by remember { mutableStateOf(0) }
 
@@ -94,6 +100,9 @@ fun ExpenseListScreen(
     }
     LaunchedEffect(selectedMonth) {
         viewModel.setMonth(selectedMonth)
+    }
+    LaunchedEffect(selectedYear) {
+        viewModel.setYear(selectedYear)
     }
 
     LaunchedEffect(selectedCategoryId) {
@@ -112,6 +121,12 @@ fun ExpenseListScreen(
                 options = monthNames,
                 selected = selectedMonth,
                 onSelected = { selectedMonth = it }
+            )
+            DropdownMenuBox(
+                label = "Godina",
+                options = yearOptions,
+                selected = selectedYear,
+                onSelected = { selectedYear = it }
             )
 
             DropdownMenuBox(
