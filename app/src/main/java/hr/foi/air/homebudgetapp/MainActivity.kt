@@ -83,6 +83,9 @@ class MainActivity : ComponentActivity() {
                             },
                             onUpdateCategory = { id ->
                                 navController.navigate("update_expense/$id")
+                            },
+                            onViewStatistics ={
+                                navController.navigate("statistics")
                             }
 
                         )

@@ -6,6 +6,7 @@ interface ExpenseApi {
     @GET("api/expense")
     suspend fun getExpenses(
         @Query("month") month: Int? = null,
+        @Query("year") year: Int? = null,
         @Query("categoryId") categoryId: Int? = null
     ): ApiResponseDto<List<ExpenseResponseDto>>
 

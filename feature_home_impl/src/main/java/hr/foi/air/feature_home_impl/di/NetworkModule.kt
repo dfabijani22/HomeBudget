@@ -8,6 +8,7 @@ import hr.foi.air.feature_home_impl.network.AuthApi
 import hr.foi.air.feature_home_impl.network.AuthInterceptor
 import hr.foi.air.feature_home_impl.network.CategoryApi
 import hr.foi.air.feature_home_impl.network.ExpenseApi
+import hr.foi.air.feature_home_impl.network.StatisticsApi
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -45,4 +46,8 @@ object NetworkModule {
     @Provides @Singleton
     fun provideExpenseApi(retrofit: Retrofit): ExpenseApi =
         retrofit.create(ExpenseApi::class.java)
+
+    @Provides @Singleton
+    fun provideStatisticsApi(retrofit: Retrofit): StatisticsApi =
+        retrofit.create(StatisticsApi::class.java)
 }

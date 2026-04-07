@@ -11,9 +11,9 @@ class ExpenseRepositoryImpl @Inject constructor(
     private val api: ExpenseApi
 ) : ExpenseRepository {
 
-    override suspend fun getExpenses(month: Int?, categoryId: Int?)
+    override suspend fun getExpenses(month: Int?, year: Int?, categoryId: Int?)
             : ApiResponse<List<ExpenseResponse>> {
-        val res = api.getExpenses(month, categoryId)
+        val res = api.getExpenses(month,year, categoryId)
         val mapped = res.data?.map { it.toModel() } ?: emptyList()
         return ApiResponse(res.success, res.message, mapped)
     }

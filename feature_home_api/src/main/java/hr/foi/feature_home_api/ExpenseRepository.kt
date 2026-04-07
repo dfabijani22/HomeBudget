@@ -6,6 +6,7 @@ interface ExpenseRepository {
 
     suspend fun getExpenses(
         month: Int? = null,
+        year: Int? = null,
         categoryId: Int? = null
     ): ApiResponse<List<ExpenseResponse>>
     suspend fun getById(id: Int): ApiResponse<ExpenseResponse>
