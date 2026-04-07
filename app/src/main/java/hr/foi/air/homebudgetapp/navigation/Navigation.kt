@@ -90,6 +90,7 @@ fun NavigationGraph(
                 })
         newExpenseNav(onExpenseAdded = {
             navController.popBackStack()
+            navController.navigate((EXPENSES_ROUTE))
         })
         expensesNav(
             onUpdateExpense = { id ->

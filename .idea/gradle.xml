@@ -12,6 +12,8 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
             <option value="$PROJECT_DIR$/core" />
+            <option value="$PROJECT_DIR$/feature_expense_grid" />
+            <option value="$PROJECT_DIR$/feature_expense_list" />
             <option value="$PROJECT_DIR$/feature_home_api" />
             <option value="$PROJECT_DIR$/feature_home_impl" />
           </set>

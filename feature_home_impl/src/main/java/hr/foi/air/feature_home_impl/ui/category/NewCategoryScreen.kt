@@ -73,7 +73,7 @@ fun NewCategoryScreen(
                 viewModel.addCategory(
                     name = name,
                     description = description,
-                    isDefault = false      // ako želiš dropdown, dodamo
+                    isDefault = false
                 )
             },
             modifier = Modifier.fillMaxWidth(),

@@ -147,7 +147,6 @@ fun NewExpenseScreen(
                 val dialog = android.app.DatePickerDialog(
                     context,
                     { _, year, month, day ->
-                        // Android DatePicker vraća month 0..11
                         selectedLocalDate = LocalDate.of(year, month + 1, day)
                     },
                     selectedLocalDate.year,

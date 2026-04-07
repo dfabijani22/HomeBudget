@@ -22,14 +22,14 @@ object NetworkModule {
         authInterceptor: AuthInterceptor
     ): OkHttpClient {
         return OkHttpClient.Builder()
-            .addInterceptor(authInterceptor)  // ➜ Authorization: Bearer <token> // log URL + header u Logcat
+            .addInterceptor(authInterceptor)
             .build()
     }
 
     @Provides @Singleton
     fun provideRetrofit(client: OkHttpClient): Retrofit =
         Retrofit.Builder()
-            .baseUrl("http://10.0.2.2:5003/") // bez /api/, putanje će ga imati
+            .baseUrl("http://10.0.2.2:5003/")
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

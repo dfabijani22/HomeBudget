@@ -5,10 +5,7 @@ pluginManagement {
         gradlePluginPortal()
     }
     plugins {
-        // Kotlin (za cijeli projekt)
         id("org.jetbrains.kotlin.android") version "1.9.22"
-
-        // Hilt (za cijeli projekt)
         id("com.google.dagger.hilt.android") version "2.51.1"
 
     }
@@ -32,3 +29,5 @@ include(":app")
 include(":core")
 include(":feature_home_api")
 include(":feature_home_impl")
+include(":feature_expense_list")
+include(":feature_expense_grid")

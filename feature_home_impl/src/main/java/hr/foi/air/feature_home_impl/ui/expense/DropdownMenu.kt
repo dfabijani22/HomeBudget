@@ -1,9 +1,6 @@
 package hr.foi.air.feature_home_impl.ui.expense
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
@@ -23,7 +20,8 @@ fun DropdownMenuBox(
     label: String,
     options: List<Pair<Int, String>>,
     selected: Int,
-    onSelected: (Int) -> Unit
+    onSelected: (Int) -> Unit,
+    modifier: Modifier
 ) {
     var expanded by remember { mutableStateOf(false) }
 
